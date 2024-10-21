@@ -45,6 +45,7 @@ RUN apk add --no-cache \
 RUN mkdir -p /var/run/sshd /run/nginx /usr/local/unicloud
 ADD app/    /usr/local/unicloud/
 ADD app_client/    /usr/local/unicloud_client/
+ADD conf/sshd/client_root_ssh_config /root/.ssh/config
 ADD conf/sshd/sshd_config_alpine /etc/sshd_config
 ADD conf/sshd/sshd_config_alpine_debug /etc/sshd_config_debug
 RUN mv /etc/nginx/http.d/default.conf /etc/nginx/http.d/default.conf.install
