@@ -4,7 +4,7 @@ volumes:
 services:
   # SERVER
   server:
-    # image: agarbato1/unison-unicloud
+    image: ghcr.io/yanhao98/unicloud:latest
     build:
       context: ../../
       dockerfile: Dockerfile
@@ -32,21 +32,21 @@ services:
         source: shares
         target: /shares
       # ##########################################################
-      - type: bind
-        source: ../../start/start.py
-        target: /start/start.py
-      - type: bind
-        source: ../../start/shell_cmd.py
-        target: /start/shell_cmd.py
-      - type: bind
-        source: ../../start/templates/unicloud.tpl.ini
-        target: /start/templates/unicloud.tpl.ini
-      - type: bind
-        source: ../../app/db_conn.py
-        target: /usr/local/unicloud/db_conn.py
+      # - type: bind
+      #   source: ../../start/start.py
+      #   target: /start/start.py
+      # - type: bind
+      #   source: ../../start/shell_cmd.py
+      #   target: /start/shell_cmd.py
+      # - type: bind
+      #   source: ../../start/templates/unicloud.tpl.ini
+      #   target: /start/templates/unicloud.tpl.ini
+      # - type: bind
+      #   source: ../../app/db_conn.py
+      #   target: /usr/local/unicloud/db_conn.py
   # CLIENT
   client:
-    # image: agarbato1/unison-unicloud
+    image: ghcr.io/yanhao98/unicloud:latest
     build:
       context: ../../
       dockerfile: Dockerfile
@@ -74,23 +74,23 @@ services:
         source: ./client/share
         target: /data/share
       # ##########################################################
-      - type: bind
-        source: ../../start/start.py
-        target: /start/start.py
-      - type: bind
-        source: ../../start/shell_cmd.py
-        target: /start/shell_cmd.py
-      - type: bind
-        source: ../../conf/sshd/client_root_ssh_config
-        target: /root/.ssh/config
-      - type: bind
-        source: ../../app_client/main.py
-        target: /usr/local/unicloud_client/main.py
+      # - type: bind
+      #   source: ../../start/start.py
+      #   target: /start/start.py
+      # - type: bind
+      #   source: ../../start/shell_cmd.py
+      #   target: /start/shell_cmd.py
+      # - type: bind
+      #   source: ../../conf/sshd/client_root_ssh_config
+      #   target: /root/.ssh/config
+      # - type: bind
+      #   source: ../../app_client/main.py
+      #   target: /usr/local/unicloud_client/main.py
     networks:
       unison:
 
 networks:
   unison:
-    driver: bridge
-    ipam:
-      driver: default
+    # driver: bridge
+    # ipam:
+    #   driver: default
