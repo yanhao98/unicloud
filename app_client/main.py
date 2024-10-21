@@ -1,4 +1,5 @@
 import time
+from flask import json
 import requests
 import os
 from conf import *
@@ -32,6 +33,7 @@ def start_sync(log, start_ts):
   #match = ['BGN', 'END', 'Nothing', 'Complete']
   data = {'share': server_share, 'start_ts': start_ts}
   try:
+    # print(f"POST {start_sync_url} with data: {json.dumps(data)}", flush=True)
     r = requests.post(url=start_sync_url, data=data)
   except requests.ConnectionError:
     return 6
@@ -40,7 +42,7 @@ def start_sync(log, start_ts):
       run = ShellCmd(command)
       result.insert(0, run.getpid())
       result.insert(1, run.getrc())
-      #print (run)
+      # print(run)
       if run.getrc() == 0:
         result.insert(2, 'OK')
       elif run.getrc() == 1 or run.getrc() == 2:
@@ -68,6 +70,7 @@ def start_sync(log, start_ts):
 
 def end_sync(result, start_ts, log):
   data = {'share': server_share, 'start_ts': start_ts, 'end_ts': int(time.time()), 'status': result[2], 'log': result[3], 'sync_status': result[4] }
+  # print(f"POST {end_sync_url} with data: {json.dumps(data)}", flush=True)
   requests.post(url=end_sync_url, data=data)
   #log.client_error("Log received : %s" % result[3])
   log.sync_end(result)
@@ -86,7 +89,7 @@ def scheduler_sync():
   log = Log(logfile)
   start_ts = get_ts()
   result = start_sync(log, start_ts)
-  #print (result)
+  # print(result)
   if result == 6 or result == 503:
     log.client_error(f"Client {client_hostname} can't contact API Server [ {start_sync_url} ]")
   elif result == 500:

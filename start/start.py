@@ -109,7 +109,7 @@ def gen_key():
 
 
 def conf_supervisord():
-  print("Creating Supervise Config")
+  print(f"Creating Supervise Config {supervise_cfg}")
   context = {
       'role': role,
       'server_debug': server_debug,
@@ -150,7 +150,7 @@ def cache_api_hostname():
 
 
 def test_connection():
-    #print ("Checking SSH Connection")
+    print("Checking SSH Connection")
     command = f"su -c \"ssh -p {server_port} -o \"StrictHostKeyChecking=no\" -o \"BatchMode=yes\" -o \"ConnectTimeout=3\" {user}@{server_hostname} \"echo 2>&1\"\" {user}"
     cmd = ShellCmd(command)
     if cmd.getrc() == 0:
@@ -186,7 +186,7 @@ def client_conf(role):
     with open(client_app_cfg, 'w') as f:
       file = render_template('clientconf.tpl.py', context)
       f.write(file)
-    print("Creating unison profile")
+    print(f"Creating unison profile {unison_prf}")
     share_path = get_share_path()
     context = {
         'user': user,
@@ -235,7 +235,7 @@ def get_share_path():
 
 
 def server_conf():
-     print("Creating uwsgi app ini..")
+     print(f"Creating uwsgi app ini.. {uwsgi_ini}")
      context = {'user_uid': user_uid}
      with open(uwsgi_ini, 'w') as f:
        file = render_template('unicloud.tpl.ini', context)
@@ -341,10 +341,10 @@ def exit_screen(status, error="None", role="None"):
       sys.exit(404)
 
 ############## START ##############
-
+print("🤡 START UNICLOUD 🤡")
 
 config_status = config_exist()
-check_user_uid()
+# check_user_uid()
 
 
 if not config_status:

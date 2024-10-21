@@ -37,7 +37,12 @@ sql_table_clients = """ CREATE TABLE IF NOT EXISTS clients (
 
 backup_share = f""" INSERT OR IGNORE INTO shares 
                     (id,name,path,description,size) 
-                    values ('0','unicloud_backup','{shares_path}/unicloud-backup','Unicloud Backup','None');"""
+                    values ('0','unicloud_backup','{shares_path}/unicloud-backup','Unicloud Backuppp','None');"""
+
+# Just for testing
+share1 = f""" INSERT OR IGNORE INTO shares 
+                    (id,name,path,description,size) 
+                    values ('1','share1','{shares_path}/share1','testing','None');"""
 
 
 def create_connection(db_file):
@@ -88,6 +93,7 @@ def init_db():
       create_table(conn, sql_table_events)
       create_table(conn, sql_table_clients)
       create_table(conn, backup_share)
+      create_table(conn, share1)
       conn.commit()
       conn.close()
    else:

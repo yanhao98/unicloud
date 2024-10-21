@@ -10,6 +10,7 @@ class ShellCmd(object):
 
     def __init__(self, cmd):
         self.cmd = cmd
+        print(f"🚀 Running command: {cmd}")
         out = subprocess.Popen([cmd],
                                shell=True,
                                stdout=subprocess.PIPE,
@@ -18,7 +19,7 @@ class ShellCmd(object):
         self.output = stdout.decode(errors='replace')[:-1]
         self.rc = out.returncode
         self.pid = out.pid
-        # print (self.output)
+        print(f"            output: {self.output}")
 
     def __repr__(self):
         return self.output

@@ -1,6 +1,5 @@
 #!/bin/sh
-docker-compose stop
-docker-compose rm
+docker-compose down -v
 rm -rf client server
 
 echo "Create dirs.."
@@ -11,3 +10,5 @@ echo "Test file client" > client/share/client_test.txt
 
 touch client/.gitkeep client/share/.gitkeep
 touch server/.gitkeep server/shares/.gitkeep
+
+sleep 1

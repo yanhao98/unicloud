@@ -1,5 +1,5 @@
-FROM alpine:3.19.1
-ARG UNISON_VERSION=2.53.4
+FROM alpine:3.20.3
+ARG UNISON_VERSION=2.53.5
 
 MAINTAINER andrea.garbato@gmail.com
 
