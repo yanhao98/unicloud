@@ -4,7 +4,7 @@ import requests
 import os
 from conf import *
 from apscheduler.schedulers.background import BlockingScheduler
-from datetime import datetime
+from datetime import datetime, timedelta
 from shell import ShellCmd
 from log import Log
 
@@ -56,6 +56,7 @@ def start_sync(log, start_ts):
       elif "Synchronization complete" in unisonstderr:
         result.insert(4, "CHANGED")
       elif "Synchronization incomplete" in unisonstderr:
+        scheduler.get_job("unison_sync_job").modify(next_run_time=datetime.now() + timedelta(seconds=10))
         result.insert(4, "WARNING")
       else:
         result.insert(4, "UNKNOWN")
