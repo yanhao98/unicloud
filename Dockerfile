@@ -5,6 +5,7 @@ MAINTAINER andrea.garbato@gmail.com
 
 # Install packages
 
+ARG PIP_NO_CACHE_DIR=off
 ENV TZ=Europe/Rome
 
 RUN apk add --no-cache \
@@ -45,7 +46,7 @@ RUN apk add --no-cache \
 RUN mkdir -p /var/run/sshd /run/nginx /usr/local/unicloud
 ADD app/    /usr/local/unicloud/
 ADD app_client/    /usr/local/unicloud_client/
-ADD conf/sshd/client_root_ssh_config /root/.ssh/config
+ADD conf/sshd/client_root_ssh_config /data/.ssh/config
 ADD conf/sshd/sshd_config_alpine /etc/sshd_config
 ADD conf/sshd/sshd_config_alpine_debug /etc/sshd_config_debug
 RUN mv /etc/nginx/http.d/default.conf /etc/nginx/http.d/default.conf.install
@@ -54,6 +55,8 @@ ADD conf/nginx/default.conf /etc/nginx/http.d/default.conf
 ADD conf/logrotate.d/ /etc/logrotate.d/
 ADD start/ /start/
 WORKDIR "/start"
+
+RUN sed -i 's|/root|/data|g' /etc/passwd
 
 EXPOSE 22
 EXPOSE 80

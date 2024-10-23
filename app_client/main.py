@@ -122,7 +122,14 @@ scheduler = BlockingScheduler({
   }
 })
 
-scheduler.add_job(func=scheduler_sync, id="unison_sync_job", trigger="interval", seconds=int(sync_interval), next_run_time=datetime.now(), replace_existing=True)
+scheduler.add_job(
+    func=scheduler_sync,
+    id="unison_sync_job",
+    trigger="interval",
+    seconds=int(sync_interval),
+    next_run_time=datetime.now().replace(second=0, microsecond=0),
+    replace_existing=True,
+)
 if role == "replica_server":
   scheduler.add_job(func=sync_auth_keys, id="unison_sync_auth_key", trigger="interval", seconds=60, next_run_time=datetime.now(), replace_existing=True)
 scheduler.start()
