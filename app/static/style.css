@@ -58,6 +58,10 @@
     color: white;
 }
 
+#rowtablenoh code {
+    word-break: break-all;
+}
+
 /* hometable no hover */
 
 #hometable {
