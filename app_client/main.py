@@ -56,7 +56,10 @@ def start_sync(log, start_ts):
       elif "Synchronization complete" in unisonstderr:
         result.insert(4, "CHANGED")
       elif "Synchronization incomplete" in unisonstderr:
-        scheduler.get_job("unison_sync_job").modify(next_run_time=datetime.now() + timedelta(seconds=10))
+        # 对齐到5秒的倍数，只是为了好看
+        next_run_time = datetime.now() + timedelta(seconds=10)
+        next_run_time = next_run_time + timedelta(seconds=(5 - next_run_time.second % 5))
+        scheduler.get_job("unison_sync_job").modify(next_run_time=next_run_time)
         result.insert(4, "WARNING")
       else:
         result.insert(4, "UNKNOWN")
