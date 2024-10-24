@@ -5,7 +5,7 @@ ARG PIP_NO_CACHE_DIR=off
 ARG PACKAGES_FOR_BUILD="python3-dev gcc musl-dev linux-headers"
 ARG PACKAGES_FOR_RUNTIME="dumb-init nginx supervisor openssh logrotate"
 
-RUN apk add --no-cache \
+RUN apk add -q --no-cache \
     $PACKAGES_FOR_BUILD \
     $PACKAGES_FOR_RUNTIME \
     && pip3 install -qq --break-system-packages flask flask_restful uwsgi requests  flask-basicAuth flask-autoindex psutil apscheduler sqlalchemy \
@@ -15,12 +15,12 @@ RUN apk add --no-cache \
 # 🐳 
 FROM base AS build_unison
 # ARG UNISON_VERSION=2.53.5
-RUN apk add --no-cache make ocaml musl-dev libc-dev \
+RUN apk add -q --no-cache make ocaml musl-dev libc-dev \
     # && wget -qO- https://github.com/bcpierce00/unison/archive/refs/tags/v${UNISON_VERSION}.tar.gz | tar -xzf - -C /tmp \
     && wget -qO- https://github.com/bcpierce00/unison/archive/refs/heads/master.tar.gz | tar -xzf - -C /tmp \
     # && cd /tmp/unison-${UNISON_VERSION} \
     && cd /tmp/unison-master \
-    && make \
+    && make -s \
     && src/unison -version && src/unison-fsmonitor -version \
     && cp src/unison src/unison-fsmonitor /usr/bin/
 
