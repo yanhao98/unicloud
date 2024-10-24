@@ -1,48 +1,32 @@
-FROM alpine:3.20.3
-ARG UNISON_VERSION=2.53.5
+FROM python:3.13-alpine3.20 AS base
 
-MAINTAINER andrea.garbato@gmail.com
-
-# Install packages
-
+ENV TZ=Asia/Shanghai
 ARG PIP_NO_CACHE_DIR=off
-ENV TZ=Europe/Rome
+ARG PACKAGES_FOR_BUILD="python3-dev gcc musl-dev linux-headers"
+ARG PACKAGES_FOR_RUNTIME="dumb-init nginx supervisor openssh logrotate"
 
 RUN apk add --no-cache \
-    bash \
-    procps \
-    openssh \
-    ssmtp \
-    supervisor \
-    mutt \
-    shadow \
-    sqlite \
-    pwgen \
-    nginx \
-    fcgiwrap \
-    tzdata \
-    gcc \
-    libc-dev \
-    linux-headers \
-    dumb-init \
-    python3 \
-    g++ \
-    py3-pip \
-    logrotate \
-    python3-dev \
-    ocaml \
-    curl \
-    musl-dev \
-    make \
-    # Download & Install Unison
-    && curl -L https://github.com/bcpierce00/unison/archive/refs/tags/v${UNISON_VERSION}.tar.gz | tar zxv -C /tmp \
-    && cd /tmp/unison-${UNISON_VERSION} \
-    && make \
-    && cp src/unison src/unison-fsmonitor /usr/bin \
-    && pip3 install --break-system-packages flask flask_restful uwsgi requests  flask-basicAuth flask-autoindex psutil apscheduler sqlalchemy \
-    && apk del libc-dev linux-headers gcc g++ python3-dev curl musl-dev ocaml make \
-    && rm -rf /tmp/unison-${UNISON_VERSION}
+    $PACKAGES_FOR_BUILD \
+    $PACKAGES_FOR_RUNTIME \
+    && pip3 install -qq --break-system-packages flask flask_restful uwsgi requests  flask-basicAuth flask-autoindex psutil apscheduler sqlalchemy \
+    && apk del $PACKAGES_FOR_BUILD \
+    && rm -rf /var/cache/* /tmp/*
 
+# 🐳 
+FROM base AS build_unison
+# ARG UNISON_VERSION=2.53.5
+RUN apk add --no-cache make ocaml musl-dev libc-dev \
+    # && wget -qO- https://github.com/bcpierce00/unison/archive/refs/tags/v${UNISON_VERSION}.tar.gz | tar -xzf - -C /tmp \
+    && wget -qO- https://github.com/bcpierce00/unison/archive/refs/heads/master.tar.gz | tar -xzf - -C /tmp \
+    # && cd /tmp/unison-${UNISON_VERSION} \
+    && cd /tmp/unison-master \
+    && make \
+    && src/unison -version && src/unison-fsmonitor -version \
+    && cp src/unison src/unison-fsmonitor /usr/bin/
+
+# 🐳 final image
+FROM base
+COPY --from=build_unison /usr/bin/unison /usr/bin/unison
 RUN mkdir -p /var/run/sshd /run/nginx /usr/local/unicloud
 ADD app/    /usr/local/unicloud/
 ADD app_client/    /usr/local/unicloud_client/
